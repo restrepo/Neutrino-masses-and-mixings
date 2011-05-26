@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Check su(5) texture. The texture is the one given
 by the coefficient calculation, e.g:
     y=np.array([1,15,1350,1])/epsfac
@@ -30,7 +31,7 @@ def lepton(eps=0.037):
     alpha=1./np.sqrt(60.)
     eps=0.037
     rdm=np.random.uniform(0.8,1.2,(3,3))
-    #rdm[1,0]=np.random.uniform(0.1,0.2) #small U_13
+    rdm[1,0]=0. #np.random.uniform(0.1,0.2) #small U_13
     #rdm[0,0]=0.;rdm[0,1]=0.;rdm[0,2]=0. #does not change anything
     #rdm[2,1]=np.random.uniform(0.1,0.5) #help with U_13
     coeff=np.array([[0,0,0],\
@@ -43,7 +44,8 @@ def lepton(eps=0.037):
                [coeff[1,0]*eps**3,coeff[1,1]*eps**2+coeffp*eps**3,coeff[1,2]*eps**3],[coeff[2,0]*eps**3,coeff[2,1]*eps**2,coeff[2,2]*eps]])
 
     (m,V)=np.linalg.eig(np.dot(np.transpose(l),l))
-    return order(m,V)
+#    return order(m,V)
+    return np.identity(3)
 
 
 def chginput(sinput,ry1,ry2,ry3,rr1,rr2,rr3,rx0min,rx0max,\
@@ -304,10 +306,12 @@ def optloop(mdl=1,ifin=10,minimum='False',y1=15,y2=1350,y3=13500,\
         x0min=ix0min;x0max=ix0max
         #x0min=0.7;x0max=1.3
         
-    nseed=1
-    np.random.seed(nseed)
+    nseed=0
+    if nseed==1:
+        np.random.seed(nseed)
     X0=np.random.uniform(x0min,x0max,(ifin,npar-1))
-    np.random.seed(nseed)
+    if nseed==1:
+        np.random.seed(nseed)
     X0m3=np.random.uniform(lmin,lmax,(ifin,1)) 
     X0=np.hstack([X0,X0m3])
     if minimum:
@@ -331,8 +335,8 @@ if __name__ == "__main__":
      independently below
     '''
     mdl=3
-    mdlnew=raw_input("Choose the model 1 to 5, (D=3 best model):")
-    if mdlnew: mdl=int(mdlnew)
+#    mdlnew=raw_input("Choose the model 1 to 5, (D=3 best model):")
+#    if mdlnew: mdl=int(mdlnew)
     print 'mdl:',mdl        
     y1=-5
     y2=-1924
