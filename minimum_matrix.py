@@ -127,17 +127,21 @@ def coeffmatrix(mdl,x1,x):
     input: mdl -> integer
            matrix model  (see matrixmdl)
          : x1 -> array
-           Input for coefficient matrix 
+           Input for neutrino mass matrix 
          : x -> array
-             factor change for coefficient matrix
+             factor change (around 1) for neutrino mass matrix
     """
     v=175.; tanbeta=1; eps=epsilon; Lambda=2.2E+16
-    m3=v**2*np.sin(np.arctan(tanbeta))**2/(eps*Lambda)*1E9 #eV
+    alphaU=0.040
+    gU=np.sqrt(4.*np.pi*alphaU)
+    V=Lambda/(np.sqrt(5./12.)*gU)
+    #m3=v**2*np.sin(np.arctan(tanbeta))**2/(eps*Lambda)*1E9 #eV
+    m3=v**2*np.sin(np.arctan(tanbeta))**2/(V)*1E9 #eV
     coeff=matrixmdl(x1,mdl)
     coeffmax=np.abs(coeff).max()
     coeff=coeff/coeffmax
     x2=x[:-1] #x[-1] is the global factor
-    return coeffmax*m3*x[-1]*matrixmdl(x2,mdl)*coeff
+    return coeffmax*m3*x[-1]**2*matrixmdl(x2,mdl)*coeff
     
 
 def matrixUm(x,mdl=3,y1=17,y2=1350,y3=13500,\
@@ -306,7 +310,7 @@ def optloop(mdl=1,ifin=10,minimum='False',y1=15,y2=1350,y3=13500,\
         x0min=ix0min;x0max=ix0max
         #x0min=0.7;x0max=1.3
         
-    nseed=0
+    nseed=1
     if nseed==1:
         np.random.seed(nseed)
     X0=np.random.uniform(x0min,x0max,(ifin,npar-1))
@@ -338,7 +342,7 @@ if __name__ == "__main__":
 #    mdlnew=raw_input("Choose the model 1 to 5, (D=3 best model):")
 #    if mdlnew: mdl=int(mdlnew)
     print 'mdl:',mdl        
-    y1=-5
+    y1=-8 #-5
     y2=-1924
     y3=13500
     r1=-10/3.
@@ -347,7 +351,8 @@ if __name__ == "__main__":
     #range of x0:
     x0min=0.75;x0max=1.25
     #range of lambda:
-    lmin=0.4;lmax=1.2
+    #lmin=0.4;lmax=10.
+    lmin=3.;lmax=10.
     #number of random iterations
     iifin=100000
     #change input parameters
